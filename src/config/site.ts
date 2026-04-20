@@ -5,9 +5,9 @@ export const siteConfig = {
     "Fullstack web developer, freelancer, and SaaS builder focused on scalable products and high-end web solutions.",
   url: "https://example.com",
   links: {
-    github: "https://github.com/mehmoodzafar",
-    linkedin: "https://www.linkedin.com/in/mehmoodzafar",
-    twitter: "https://twitter.com/mehmoodzafar",
+    github: "https://github.com/mehmoodzafarfreelancing-ai",
+    linkedin: "https://www.linkedin.com/in/mehmood-zafar-402728393/",
+    twitter: "https://x.com/codebymehmood",
   },
   email: "mehmood.webworks@gmail.com",
 } as const;

@@ -34,5 +34,6 @@ export const projects: readonly Project[] = [
     githubUrl: "https://github.com/mehmoodzafar/localpulse",
     liveUrl: "https://localpulse.example.com",
     gridClass: "md:col-span-1 lg:col-span-1 lg:col-start-1 lg:row-start-2",
+    hidden: true,
   },
 ];

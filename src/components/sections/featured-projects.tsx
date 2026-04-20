@@ -2,6 +2,8 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { ProjectCard } from "@/components/projects/project-card";
 import { projects } from "@/data/projects";
 
+const visibleProjects = projects.filter((project) => !project.hidden);
+
 export function FeaturedProjects() {
   return (
     <section
@@ -17,7 +19,7 @@ export function FeaturedProjects() {
           description="Bento-style highlights—SaaS platforms, premium client experiences, and mobile-first PWAs."
         />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 lg:gap-5">
-          {projects.map((project) => (
+          {visibleProjects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
         </div>

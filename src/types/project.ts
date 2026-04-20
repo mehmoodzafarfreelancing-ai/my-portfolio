@@ -9,4 +9,6 @@ export type Project = Readonly<{
   liveUrl: string;
   /** Tailwind grid column/row span utilities for the bento layout */
   gridClass: string;
+  /** When true, omitted from the public projects grid but kept in data. */
+  hidden?: boolean;
 }>;
