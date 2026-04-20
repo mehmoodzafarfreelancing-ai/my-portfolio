@@ -1,12 +1,20 @@
 "use server";
 
+import { siteConfig } from "@/config/site";
 import { z } from "zod";
+
+const WEB3FORMS_URL = "https://api.web3forms.com/submit";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
   email: z.string().trim().email("Enter a valid email address"),
   message: z.string().trim().min(10, "Message must be at least 10 characters"),
 });
+
+type Web3FormsResponse = Readonly<{
+  success?: boolean;
+  message?: string;
+}>;
 
 export type ContactActionState = Readonly<{
   ok: boolean;
@@ -43,12 +51,51 @@ export async function submitContact(
     return { ok: false, fieldErrors };
   }
 
-  // Hook for Resend / SMTP: e.g. process.env.RESEND_API_KEY
-  console.log("[contact]", {
-    name: parsed.data.name,
-    email: parsed.data.email,
-    messageLength: parsed.data.message.length,
-  });
+  const accessKey = process.env.WEB3FORMS_ACCESS_KEY?.trim();
+  if (!accessKey) {
+    return {
+      ok: false,
+      formError:
+        "Contact form is not configured. Please email " + siteConfig.email + " directly.",
+    };
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(WEB3FORMS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        access_key: accessKey,
+        name: parsed.data.name,
+        email: parsed.data.email,
+        message: parsed.data.message,
+        subject: `Portfolio contact — ${siteConfig.name}`,
+        from_name: parsed.data.name,
+      }),
+    });
+  } catch {
+    return {
+      ok: false,
+      formError: "Network error. Please try again or email " + siteConfig.email + " directly.",
+    };
+  }
+
+  const data = (await response.json()) as Web3FormsResponse;
+  if (!response.ok || !data.success) {
+    return {
+      ok: false,
+      formError:
+        typeof data.message === "string" && data.message.length > 0
+          ? data.message
+          : "Could not send your message. Please try again or email " +
+            siteConfig.email +
+            " directly.",
+    };
+  }
 
   return { ok: true };
 }
